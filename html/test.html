@@ -3,37 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Master Test</title>
-    <link rel="stylesheet" href="../css/test_n_result.css">
+    <title>Typing Test - Typing Master</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+		/* Test specific styles that extend the main style.css */
+		.test-container-wrapper {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.test-header {
+			padding: 1rem 2rem;
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.test-header .logo h1 {
+			color: white;
+			font-size: 1.8rem;
+			font-weight: 700;
+		}
+
+		.timer {
+            position: absolute;
+            bottom: 4rem;
+            right: 6rem;
+            z-index: 10;
+			background: rgba(255, 255, 255, 0.9);
+			color: #dc2626;
+			font-size: 1.5rem;
+			font-weight: 800;
+			border-radius: 50%;
+			width: 70px;
+			height: 70px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			backdrop-filter: blur(10px);
+			transition: all 0.3s ease;
+		}
+
+		.timer.warning {
+			color: #f59e0b;
+			background: rgba(255, 255, 255, 0.95);
+		}
+
+		.timer.danger {
+			color: #dc2626;
+			background: rgba(255, 255, 255, 1);
+			animation: pulse 1s infinite;
+		}
+
+		@keyframes pulse {
+			0%, 100% { transform: scale(1); }
+			50% { transform: scale(1.05); }
+		}
+
+		.test-main {
+			flex: 1;
+			padding: 2rem;
+			max-width: 1000px;
+			margin: 0 auto;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.test-card {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 20px;
+			padding: 3rem 2rem;
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			backdrop-filter: blur(10px);
+			width: 100%;
+			max-width: 900px;
+		}
+
+		.test-title {
+			font-size: 2rem;
+			font-weight: 800;
+			margin-bottom: 2rem;
+			text-align: center;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+
+		.text-display {
+			background: #f9fafb;
+			border: 2px solid #e5e7eb;
+			border-radius: 12px;
+			padding: 1.5rem;
+			font-size: 1.2rem;
+			line-height: 1.8;
+			margin-bottom: 1.5rem;
+			min-height: 160px;
+			font-family: 'Courier New', monospace;
+			color: #374151;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.text-display span {
+			position: relative;
+			transition: all 0.2s ease;
+		}
+
+		.text-display span.correct {
+			color: #10b981;
+			background-color: rgba(16, 185, 129, 0.1);
+		}
+
+		.text-display span.incorrect {
+			color: #dc2626;
+			background-color: rgba(220, 38, 38, 0.1);
+			text-decoration: underline;
+		}
+
+		.text-display span.active {
+			background-color: #4f46e5;
+			color: white;
+			border-radius: 2px;
+			animation: blink 1s infinite;
+		}
+
+		@keyframes blink {
+			0%, 50% { opacity: 1; }
+			51%, 100% { opacity: 0.7; }
+		}
+
+		.input-field {
+			width: 100%;
+			padding: 1rem 1.5rem;
+			font-size: 1.1rem;
+			border: 2px solid #e5e7eb;
+			border-radius: 12px;
+			resize: none;
+			height: 120px;
+			margin-bottom: 1.5rem;
+			transition: all 0.3s ease;
+			background-color: #f9fafb;
+			font-family: 'Courier New', monospace;
+			color: #374151;
+		}
+
+		.input-field:focus {
+			outline: none;
+			border-color: #4f46e5;
+			box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+			background-color: white;
+		}
+
+		.input-field:disabled {
+			background-color: #f3f4f6;
+			cursor: not-allowed;
+			opacity: 0.7;
+		}
+
+		.stats-container {
+			display: flex;
+			justify-content: center;
+			gap: 3rem;
+			margin-bottom: 2rem;
+			flex-wrap: wrap;
+		}
+
+		.stat-item {
+			text-align: center;
+			background: rgba(79, 70, 229, 0.05);
+			padding: 1.5rem;
+			border-radius: 12px;
+			min-width: 120px;
+			transition: transform 0.3s ease;
+		}
+
+		.stat-item:hover {
+			transform: translateY(-2px);
+		}
+
+		.stat-value {
+			display: block;
+			font-size: 2.5rem;
+			font-weight: 800;
+			color: #4f46e5;
+			margin-bottom: 0.5rem;
+		}
+
+		.stat-label {
+			font-size: 0.9rem;
+			color: #6b7280;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.control-buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		.test-btn {
+			padding: 0.875rem 2rem;
+			border: none;
+			border-radius: 12px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-decoration: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 140px;
+		}
+
+		.btn-primary {
+			background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+			color: white;
+			box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
+		}
+
+		.btn-secondary {
+			background: white;
+			color: #4f46e5;
+			border: 2px solid #4f46e5;
+		}
+
+		.btn-secondary:hover {
+			background: #4f46e5;
+			color: white;
+			transform: translateY(-2px);
+		}
+
+		.btn-success {
+			background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+			color: white;
+			box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+		}
+
+		.btn-success:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+		}
+
+		.test-btn:disabled {
+			background: #9ca3af;
+			color: white;
+			cursor: not-allowed;
+			transform: none;
+			box-shadow: none;
+			border: none;
+		}
+
+		.test-instructions {
+			background: rgba(79, 70, 229, 0.05);
+			border-left: 4px solid #4f46e5;
+			padding: 1rem 1.5rem;
+			border-radius: 0 12px 12px 0;
+			margin-bottom: 2rem;
+			color: #374151;
+		}
+
+		.test-instructions h3 {
+			color: #4f46e5;
+			margin-bottom: 0.5rem;
+			font-size: 1.1rem;
+		}
+
+		.test-instructions ul {
+			margin-left: 1rem;
+			line-height: 1.6;
+		}
+
+		.test-status {
+			text-align: center;
+			margin-bottom: 1.5rem;
+			padding: 1rem;
+			border-radius: 12px;
+			font-weight: 600;
+			display: none;
+		}
+
+		.test-status.ready {
+			background: rgba(16, 185, 129, 0.1);
+			color: #059669;
+			border: 1px solid rgba(16, 185, 129, 0.3);
+			display: block;
+		}
+
+		.test-status.active {
+			background: rgba(79, 70, 229, 0.1);
+			color: #4f46e5;
+			border: 1px solid rgba(79, 70, 229, 0.3);
+			display: block;
+		}
+
+		.test-status.finished {
+			background: rgba(245, 158, 11, 0.1);
+			color: #d97706;
+			border: 1px solid rgba(245, 158, 11, 0.3);
+			display: block;
+		}
+
+		.test-footer {
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			padding: 1.5rem;
+			text-align: center;
+			color: white;
+		}
+
+		/* Progress bar */
+		.progress-container {
+			background: #e5e7eb;
+			border-radius: 6px;
+			height: 8px;
+			margin-bottom: 1.5rem;
+			overflow: hidden;
+		}
+
+		.progress-bar {
+			background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+			height: 100%;
+			width: 0%;
+			transition: width 0.3s ease;
+			border-radius: 6px;
+		}
+
+		/* Responsive Design */
+		@media (max-width: 768px) {
+			.test-main {
+				padding: 1rem;
+			}
+
+			.test-card {
+				padding: 2rem 1rem;
+			}
+
+			.test-title {
+				font-size: 1.75rem;
+			}
+
+			.stats-container {
+				gap: 1.5rem;
+			}
+
+			.stat-value {
+				font-size: 2rem;
+			}
+
+			.test-header {
+				flex-direction: column;
+				gap: 1rem;
+				text-align: center;
+			}
+
+			.control-buttons {
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.test-btn {
+				width: 100%;
+				max-width: 250px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.test-card {
+				padding: 1.5rem;
+			}
+
+			.test-title {
+				font-size: 1.5rem;
+			}
+
+			.text-display {
+				font-size: 1rem;
+				padding: 1rem;
+			}
+
+			.input-field {
+				font-size: 1rem;
+				height: 100px;
+			}
+
+			.timer {
+				width: 60px;
+				height: 60px;
+				font-size: 1.3rem;
+			}
+		}
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Typing Master</h1>
-            <div class="timer" id="timer">60</div>
-        </header>
-        
-        <main>
-            <div class="test-container">
-                <div class="text-display" id="text-display"></div>
-                <textarea id="input-field" class="input-field" placeholder="Start typing when ready..."></textarea>
-                
-                <div class="stats">
-                    <div class="stat">
-                        <span id="wpm">0</span>
-                        <label>WPM</label>
-                    </div>
-                    <div class="stat">
-                        <span id="accuracy">100%</span>
-                        <label>Accuracy</label>
-                    </div>
-                </div>
-                
-                <button id="restart-btn" class="btn">Restart Test</button>
+<div class="test-container-wrapper">
+    <!-- Header -->
+    <header class="test-header">
+        <div class="logo">
+            <h1 style="text-align: center">⌨️ Typing Master</h1>
+        </div>
+
+    </header>
+
+    <!-- Main Content -->
+    <div class="timer" id="timer">60</div>
+    <main class="test-main">
+        <div class="test-card">
+            <h1 class="test-title">Typing Speed Test</h1>
+
+            <div class="test-instructions">
+                <h3>📝 Instructions:</h3>
+                <ul>
+                    <li>Type the text below as accurately and quickly as possible</li>
+                    <li>The test will start when you begin typing</li>
+                    <li>Focus on accuracy first, then speed</li>
+                    <li>Use the restart button to try again</li>
+                </ul>
             </div>
-        </main>
-    </div>
-    
-    <script src="../js/test.js"></script>
+
+            <div class="test-status ready" id="test-status">
+                Ready to start! Click in the text area below and begin typing.
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div class="text-display" id="text-display"></div>
+            <textarea id="input-field" class="input-field" placeholder="Click here and start typing when ready..."></textarea>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-value" id="wpm">0</span>
+                    <div class="stat-label">WPM</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="accuracy">100%</span>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="characters">0/0</span>
+                    <div class="stat-label">Characters</div>
+                </div>
+            </div>
+
+            <div class="control-buttons">
+                <button id="restart-btn" class="test-btn btn-secondary">🔄 Restart Test</button>
+                <button id="new-text-btn" class="test-btn btn-primary">📝 New Text</button>
+                <a href="../index.html" class="test-btn btn-success">🏠 Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="test-footer">
+        <p>&copy; 2024 Typing Master. Improve your typing skills one keystroke at a time!</p>
+    </footer>
+</div>
+
+<script src="../js/test.js"></script>
+<script>
+    // Additional enhancements for the test page
+    document.addEventListener('DOMContentLoaded', function() {
+        const timer = document.getElementById('timer');
+        const testStatus = document.getElementById('test-status');
+        const progressBar = document.getElementById('progress-bar');
+        const inputField = document.getElementById('input-field');
+
+        // Update timer styling based on remaining time
+        function updateTimerStyle(timeLeft, totalTime = 60) {
+            const percentage = (timeLeft / totalTime) * 100;
+
+            timer.classList.remove('warning', 'danger');
+
+            if (percentage <= 25) {
+                timer.classList.add('danger');
+            } else if (percentage <= 50) {
+                timer.classList.add('warning');
+            }
+        }
+
+        // Update progress bar
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+
+        // Update test status
+        function updateTestStatus(status, message) {
+            testStatus.className = `test-status ${status}`;
+            testStatus.textContent = message;
+        }
+
+        // Enhanced input field behavior
+        inputField.addEventListener('focus', function() {
+            updateTestStatus('active', '⌨️ Test in progress... Type carefully!');
+        });
+
+        inputField.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                updateTestStatus('ready', 'Ready to start! Click in the text area below and begin typing.');
+            }
+        });
+
+        // Expose functions for test.js to use
+        window.testPageHelpers = {
+            updateTimerStyle,
+            updateProgress,
+            updateTestStatus
+        };
+    });
+</script>
 </body>
 </html>

@@ -3,58 +3,656 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Test Results</title>
-    <link rel="stylesheet" href="../css/test_n_result.css">
+    <title>Test Results - Typing Master</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* Results specific styles that extend the main style.css */
+        .results-container-wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-header {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .results-header .logo h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .results-main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: 1fr;
+        }
+
+        .results-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .results-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .results-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .performance-badge.excellent {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .performance-badge.good {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .performance-badge.average {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .performance-badge.below-average {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .results-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-stat {
+            background: rgba(79, 70, 229, 0.05);
+            padding: 2rem 1rem;
+            border-radius: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .result-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79, 70, 229, 0.1);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .result-stat.highlight {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .result-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .result-stat.highlight .result-value {
+            color: #10b981;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-details {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            border: 2px solid #e5e7eb;
+        }
+
+        .result-details h3 {
+            color: #374151;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #374151;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .results-btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 160px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4f46e5;
+            border: 2px solid #4f46e5;
+        }
+
+        .btn-secondary:hover {
+            background: #4f46e5;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
+        }
+
+        /* History Section */
+        .history-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 2rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .history-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .results-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+
+        .history-item {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #4f46e5;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: #f3f4f6;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item.latest {
+            border-left-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);
+        }
+
+        .history-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        .history-stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-stat {
+            text-align: center;
+        }
+
+        .history-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .history-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 3rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 2px dashed #d1d5db;
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .results-footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        /* Achievement badges */
+        .achievements {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .results-main {
+                padding: 1rem;
+            }
+
+            .results-card, .history-card {
+                padding: 2rem 1rem;
+            }
+
+            .results-title {
+                font-size: 2rem;
+            }
+
+            .results-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .result-value {
+                font-size: 2.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .results-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .history-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .history-stats {
+                justify-content: center;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-card, .history-card {
+                padding: 1.5rem;
+            }
+
+            .results-title {
+                font-size: 1.75rem;
+            }
+
+            .result-value {
+                font-size: 2rem;
+            }
+
+            .history-item {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container results-container">
-        <header>
-            <h1>Your Results</h1>
+    <div class="results-container-wrapper">
+        <!-- Header -->
+        <header class="results-header">
+            <div class="logo">
+                <h1>⌨️ Typing Master</h1>
+            </div>
         </header>
         
-        <main>
-            <div class="results-card">
-                <h2>Latest Typing Test</h2>
-                
-                <div class="results-stats">
-                    <div class="result-item">
-                        <div class="result-value" id="final-wpm">0</div>
-                        <div class="result-label">Words per Minute</div>
+        <!-- Main Content -->
+        <main class="results-main">
+            <div class="results-grid">
+                <!-- Main Results Card -->
+                <div class="results-card">
+                    <h1 class="results-title">🎉 Test Complete!</h1>
+                    <p class="results-subtitle">Here's how you performed in your latest typing test</p>
+                    
+                    <div class="performance-badge excellent" id="performance-badge">
+                        🏆 Excellent Performance
+                    </div>
+
+                    <div class="achievements" id="achievements">
+                        <!-- Achievements will be added by JavaScript -->
                     </div>
                     
-                    <div class="result-item">
-                        <div class="result-value" id="final-accuracy">0%</div>
-                        <div class="result-label">Accuracy</div>
+                    <div class="results-stats">
+                        <div class="result-stat highlight">
+                            <span class="result-value" id="final-wpm">0</span>
+                            <div class="result-label">Words per Minute</div>
+                        </div>
+                        
+                        <div class="result-stat">
+                            <span class="result-value" id="final-accuracy">0%</span>
+                            <div class="result-label">Accuracy</div>
+                        </div>
+                        
+                        <div class="result-stat">
+                            <span class="result-value" id="final-time">60s</span>
+                            <div class="result-label">Test Duration</div>
+                        </div>
+
+                        <div class="result-stat">
+                            <span class="result-value" id="total-chars">0</span>
+                            <div class="result-label">Characters</div>
+                        </div>
                     </div>
                     
-                    <div class="result-item">
-                        <div class="result-value" id="final-time">60s</div>
-                        <div class="result-label">Time</div>
+                    <div class="result-details">
+                        <h3>📊 Detailed Statistics</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Characters Typed</span>
+                                <span class="detail-value" id="chars-typed">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Correct Characters</span>
+                                <span class="detail-value" id="correct-chars">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Errors Made</span>
+                                <span class="detail-value" id="error-count">0</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Error Rate</span>
+                                <span class="detail-value" id="error-rate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="try-again-btn" class="results-btn btn-primary">🔄 Try Again</button>
+                        <button id="new-test-btn" class="results-btn btn-secondary">📝 New Test</button>
+                        <a href="../index.html" class="results-btn btn-success">🏠 Home</a>
                     </div>
                 </div>
-                
-                <div class="result-details">
-                    <p>Characters typed: <span id="chars-typed">0</span></p>
-                    <p>Correct characters: <span id="correct-chars">0</span></p>
-                    <p>Errors: <span id="error-count">0</span></p>
-                </div>
-                
-                <button id="try-again-btn" class="btn">Try Again</button>
-            </div>
-            
-            <div class="results-history">
-                <div class="history-header">
-                    <h2>Your History</h2>
-                    <button id="clear-history-btn" class="btn btn-small">Clear History</button>
-                </div>
-                
-                <div class="results-list" id="results-list">
-                    <!-- Results will be inserted here by JavaScript -->
+
+                <!-- History Card -->
+                <div class="history-card">
+                    <div class="history-header">
+                        <h2 class="history-title">📈 Your Progress</h2>
+                        <button id="clear-history-btn" class="results-btn btn-danger">🗑️ Clear History</button>
+                    </div>
+                    
+                    <div class="results-list" id="results-list">
+                        <div class="no-results">
+                            <div class="no-results-icon">📊</div>
+                            <p>No previous results found. Take more tests to track your progress!</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
+
+        <footer class="results-footer">
+            <p>&copy; 2024 Typing Master. Keep practicing to improve your skills!</p>
+        </footer>
     </div>
     
     <script src="../js/result.js"></script>
+    <script>
+        // Enhanced results page functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const performanceBadge = document.getElementById('performance-badge');
+            const achievementsContainer = document.getElementById('achievements');
+            
+            // Function to determine performance level
+            function getPerformanceLevel(wpm, accuracy) {
+                if (wpm >= 60 && accuracy >= 95) return 'excellent';
+                if (wpm >= 40 && accuracy >= 90) return 'good';
+                if (wpm >= 25 && accuracy >= 80) return 'average';
+                return 'below-average';
+            }
+            
+            // Function to update performance badge
+            function updatePerformanceBadge(wpm, accuracy) {
+                const level = getPerformanceLevel(wpm, accuracy);
+                const badges = {
+                    'excellent': { text: '🏆 Excellent Performance', class: 'excellent' },
+                    'good': { text: '👍 Good Performance', class: 'good' },
+                    'average': { text: '📈 Average Performance', class: 'average' },
+                    'below-average': { text: '💪 Keep Practicing', class: 'below-average' }
+                };
+                
+                const badge = badges[level];
+                performanceBadge.textContent = badge.text;
+                performanceBadge.className = `performance-badge ${badge.class}`;
+            }
+            
+            // Function to add achievements
+            function addAchievements(wpm, accuracy, errorCount) {
+                const achievements = [];
+                
+                if (wpm >= 100) achievements.push('🚀 Speed Demon');
+                else if (wpm >= 80) achievements.push('⚡ Fast Typer');
+                else if (wpm >= 60) achievements.push('🎯 Good Speed');
+                else if (wpm >= 40) achievements.push('📈 Getting Better');
+                
+                if (accuracy === 100) achievements.push('🎯 Perfect Accuracy');
+                else if (accuracy >= 98) achievements.push('🎪 Near Perfect');
+                else if (accuracy >= 95) achievements.push('✨ Excellent Accuracy');
+                
+                if (errorCount === 0) achievements.push('🏆 Error Free');
+                else if (errorCount <= 3) achievements.push('👌 Low Errors');
+                
+                // Display achievements
+                achievementsContainer.innerHTML = '';
+                achievements.forEach(achievement => {
+                    const achievementEl = document.createElement('div');
+                    achievementEl.className = 'achievement';
+                    achievementEl.textContent = achievement;
+                    achievementsContainer.appendChild(achievementEl);
+                });
+                
+                if (achievements.length === 0) {
+                    achievementsContainer.style.display = 'none';
+                }
+            }
+            
+            // Function to calculate error rate
+            function calculateErrorRate(errors, total) {
+                if (total === 0) return 0;
+                return Math.round((errors / total) * 100);
+            }
+            
+            // Expose functions for result.js to use
+            window.resultPageHelpers = {
+                updatePerformanceBadge,
+                addAchievements,
+                calculateErrorRate
+            };
+            
+            // Enhanced history item creation
+            window.createHistoryItem = function(result, isLatest = false) {
+                const item = document.createElement('div');
+                item.className = `history-item ${isLatest ? 'latest' : ''}`;
+                
+                const date = new Date(result.timestamp || Date.now());
+                const formattedDate = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                item.innerHTML = `
+                    <div class="history-date">${isLatest ? '🆕 ' : ''}${formattedDate}</div>
+                    <div class="history-stats">
+                        <div class="history-stat">
+                            <div class="history-stat-value">${result.wpm || 0}</div>
+                            <div class="history-stat-label">WPM</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value">${result.accuracy || 0}%</div>
+                            <div class="history-stat-label">Accuracy</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value">${result.errors || 0}</div>
+                            <div class="history-stat-label">Errors</div>
+                        </div>
+                        <div class="history-stat">
+                            <div class="history-stat-value">${result.time || 60}s</div>
+                            <div class="history-stat-label">Time</div>
+                        </div>
+                    </div>
+                `;
+                
+                return item;
+            };
+        });
+    </script>
 </body>
 </html>
