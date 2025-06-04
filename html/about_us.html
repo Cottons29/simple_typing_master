@@ -1,33 +1,214 @@
 <!doctype html>
-<html class="no-js" lang="">
-
+<html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
-  <link rel="stylesheet" href="css/style.css">
-  <meta name="description" content="">
-
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
+  <title>About Us - Typing Hero</title>
+  <meta name="description" content="Learn about Typing Hero - the smart typing practice tool.">
+  <meta property="og:title" content="About Us - Typing Hero">
+  <meta property="og:type" content="website">
   <meta property="og:url" content="">
   <meta property="og:image" content="">
-  <meta property="og:image:alt" content="">
-
+  <meta property="og:image:alt" content="Typing Hero Logo">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.png">
-
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#fafafa">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: #ddd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-links a.active {
+      color: #fff;
+      font-weight: bold;
+      border-bottom: 2px solid #fff;
+    }
+
+    .main-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    .about-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .about-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .about-subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #6b7280;
+      margin-bottom: 2rem;
+    }
+
+    .about-section {
+      margin-bottom: 2rem;
+    }
+
+    .about-section h2 {
+      font-size: 1.5rem;
+      color: #4a4a4a;
+      margin-bottom: 0.75rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-box {
+      background: #f9fafb;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .feature-box h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+    }
+
+    .feature-box p {
+      font-size: 0.95rem;
+      color: #4b5563;
+    }
+
+    .contact p {
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      padding: 1rem;
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 600px) {
+      .about-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <header class="header">
+    <div class="nav-container">
+      <a href="#" class="logo">Typing Hero</a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="test.html">Typing Test</a>
+        <a href="results.html">Results</a>
+        <a class="active" href="about.html">About Us</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
 
-  <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
-  <script src="js/app.js"></script>
+  <main class="main-container">
+    <div class="about-card">
+      <h1 class="about-title">About Typing Hero</h1>
+      <p class="about-subtitle">Empowering users to master typing skills through smart tools and real-time tracking.</p>
 
+      <section class="about-section">
+        <h2>Our Mission</h2>
+        <p>
+          Typing Hero is built to help users of all ages and backgrounds improve their typing speed and accuracy through intuitive design and responsive feedback. 
+          We aim to make typing practice fun, modern, and personalized to each user’s pace and level.
+        </p>
+      </section>
+
+      <section class="about-section">
+        <h2>Why Choose Us?</h2>
+        <div class="features-grid">
+          <div class="feature-box">
+            <h3>🚀 Real-Time Speed Tracking</h3>
+            <p>Track your typing performance as you type, with instant feedback and accuracy highlights.</p>
+          </div>
+          <div class="feature-box">
+            <h3>🎯 Smart Learning</h3>
+            <p>Adaptive difficulty, error highlighting, and goal-based exercises keep your training focused.</p>
+          </div>
+          <div class="feature-box">
+            <h3>📈 Progress Analytics</h3>
+            <p>See your WPM history, error types, and overall growth over time with easy-to-read graphs.</p>
+          </div>
+          <div class="feature-box">
+            <h3>🌍 Easy Access</h3>
+            <p>Fully online — no install needed. Just open your browser and start typing anytime, anywhere.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="about-section contact">
+        <h2>Contact Us</h2>
+        <p>📧 Email: support@typinghero.com</p>
+        <p>🌐 Website: www.typinghero.com</p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Typing Hero. All rights reserved.</p>
+  </footer>
 </body>
-
 </html>
